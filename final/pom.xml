@@ -7,17 +7,26 @@
 
     <groupId>com.example.guestbook</groupId>
     <artifactId>guestbook</artifactId>
-    
+
 <!-- [START set_versions] -->
     <properties>
         <appengine.app.version>1</appengine.app.version>
         <appengine.sdk.version>1.9.24</appengine.sdk.version>
 
+        <jersey.version>1.19</jersey.version>
+        <objectify.version>5.0.2</objectify.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jmockit.version>1.17</jmockit.version>
+        <mockito.version>1.10.19</mockito.version>
+
         <objectify.version>5.1.5</objectify.version>
         <guava.version>18.0</guava.version>
+        <guice.version>4.0</guice.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+
 
     <prerequisites>
         <maven>3.1.0</maven>
@@ -31,12 +40,92 @@
             <artifactId>appengine-api-1.0-sdk</artifactId>
             <version>${appengine.sdk.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.google.http-client</groupId>
+            <artifactId>google-http-client</artifactId>
+            <version>1.22.0</version>
+        </dependency>
+
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
             <version>2.5</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-servlet</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>${jersey.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-json</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sun.jersey.contribs</groupId>
+            <artifactId>jersey-guice</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sun.jersey.contribs</groupId>
+            <artifactId>jersey-multipart</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>${guice.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.inject.extensions</groupId>
+            <artifactId>guice-servlet</artifactId>
+            <version>${guice.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.inject.extensions</groupId>
+            <artifactId>guice-assistedinject</artifactId>
+            <version>${guice.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>jstl</groupId>
             <artifactId>jstl</artifactId>
@@ -49,10 +138,12 @@
           <artifactId>guava</artifactId>
           <version>${guava.version}</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.googlecode.objectify/objectify -->
         <dependency>
-          <groupId>com.googlecode.objectify</groupId>
-          <artifactId>objectify</artifactId>
-          <version>${objectify.version}</version>
+            <groupId>com.googlecode.objectify</groupId>
+            <artifactId>objectify</artifactId>
+            <version>5.1.5</version>
         </dependency>
 <!-- [END Objectify_Dependencies] -->
 
@@ -63,18 +154,53 @@
             <version>${appengine.sdk.version}</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
-            <groupId>com.google.appengine</groupId>
-            <artifactId>appengine-api-stubs</artifactId>
-            <version>${appengine.sdk.version}</version>
+            <groupId>com.sun.jersey.jersey-test-framework</groupId>
+            <artifactId>jersey-test-framework-core</artifactId>
+            <version>${jersey.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>net.sf.jsr107cache</groupId>
+            <artifactId>jsr107cache</artifactId>
+            <version>1.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>pl.pragmatists</groupId>
+            <artifactId>JUnitParams</artifactId>
+            <version>1.0.5</version>
+            <scope>test</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>0.9.10</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>
         <!-- for hot reload of the web application-->
         <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.17</version>
+                <configuration>
+                    <argLine>${surefireArgLine}</argLine>
+                    <excludes>
+                        <exclude>**/IT*.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
@@ -133,4 +259,26 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+    <profile>
+    <id>local</id>
+    <activation>
+        <activeByDefault>true</activeByDefault>
+    </activation>
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/webapp/WEB-INF</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
+
+    </profile>
+    </profiles>
 </project>

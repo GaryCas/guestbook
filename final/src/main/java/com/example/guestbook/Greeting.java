@@ -60,7 +60,7 @@ public class Greeting {
    **/
   public Greeting(String book, String content) {
     this();
-    if( book != null ) {
+    if (book != null) {
       theBook = Key.create(Guestbook.class, book);  // Creating the Ancestor key
     } else {
       theBook = Key.create(Guestbook.class, "default");
